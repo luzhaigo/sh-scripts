@@ -1,0 +1,17 @@
+#!/bin/bash
+
+[ $# -eq 0 ] && echo "please provide at least one pattern" && exit 1
+
+commands=$(cat -)
+
+[[ -n $commands ]] && commands=$(echo "$commands" | grep -v hg)
+
+for arg in $@; do
+
+  commands=$(echo "$commands" | grep $arg)
+  code=$?
+  [ $code -ne 0 ] && exit $code
+
+done
+
+echo "$commands"
