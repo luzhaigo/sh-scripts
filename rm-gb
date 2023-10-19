@@ -1,0 +1,31 @@
+#!/bin/bash
+
+bye() {
+  echo "bye"
+  exit 0
+}
+
+if [ $# -ne 1 ]; then
+  echo "should provide one argument" >&2
+  exit 1
+fi
+
+branches=$(git branch | grep -i -E $1)
+
+if [ $? -ne 0 ]; then
+  echo "no branch matches" >&2
+  exit 1
+fi
+
+echo -e "branches:\n$branches\n"
+
+read -p "Would you like to delete branches? (Y/n) " -r bool
+
+case $bool in
+N | n) bye ;;
+*) echo "deleting ..." ;;
+esac
+
+echo $branches | xargs git branch -D
+
+echo "done"
