@@ -1,0 +1,36 @@
+#!/bin/bash
+
+bye() {
+  echo "bye"
+  exit 0
+}
+
+echo "modified files:"
+
+files=$(git status -s | grep -i -E "^\s+[MD]\s+")
+
+if [ $? -ne 0 ]
+then
+  echo -e '\nno file needs to be restored'
+else
+  echo -e "$files\n"
+
+  read -p "Would you like to restore files? (Y/n) " -r bool
+
+  case $bool in
+  N | n) bye ;;
+  *) echo "restorinng files:" ;;
+  esac
+
+  for file in $(echo "$files" | awk '{print $2}'); do
+    echo -n " $file"
+    echo $file | xargs git restore
+
+    if [ $? ]; then
+      echo " ✅"
+    else
+      echo " ❌"
+    fi
+
+  done
+fi
